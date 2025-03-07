@@ -41,6 +41,8 @@ export interface ThemeData {
 export default class SharedData {
   private static _instance: SharedData;
   private log = Logger.instance;
+  // Add a memoryUpdated flag
+  public memoryUpdated: boolean = false;
 
   public static theme: ThemeData = {
     editorBackground: "#282a36",
@@ -68,6 +70,11 @@ export default class SharedData {
 
   // the memory that the processor is initialized with
   public startMemory : Array<addr> = this.resetStartMemory();
+
+  //modified
+  // Differentiated memory pools
+  public codeMemory: Array<addr> = [];
+  public dataMemory: Array<addr> = [];
 
   public memoryterminalText : string = "";
 
@@ -110,10 +117,34 @@ export default class SharedData {
       //TODO
     }
   }
+  // Method to initialize codeMemory and dataMemory from the main memory
+  public initializeMemory() {
+    // Clear code and data memory
+    this.codeMemory = [];
+    this.dataMemory = [];
+
+    // Define start address for code and data segments (this can be adjusted)
+    const codeStartAddress = 0x00400000;  // Example start address for code memory
+    const dataStartAddress = 0x10000000;  // Example start address for data memory
+
+    // Filter the memory based on addresses
+    this.startMemory.forEach((mem) => {
+      if (mem.address >= codeStartAddress) {
+        // If the address is greater than or equal to the codeStartAddress, it's part of the code
+        this.codeMemory.push(mem);
+      } else if (mem.address >= dataStartAddress) {
+        // If the address is in the data range, it's part of the data
+        this.dataMemory.push(mem);
+      }
+    });
+  }
 
   public resetStartMemory()
   {
     this.startMemory = [{address: INPUT_BUFFER_ADDR, value: 0}];
+    // Reset code and data memory pools
+    this.codeMemory = [{ address: INPUT_BUFFER_ADDR, value: 0 }];
+    this.dataMemory = [{ address: INPUT_BUFFER_ADDR, value: 0 }];
     return [{address: INPUT_BUFFER_ADDR, value: 0}];
   }
 
