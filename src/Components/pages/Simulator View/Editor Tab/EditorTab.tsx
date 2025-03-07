@@ -39,6 +39,7 @@ import LoadProgramModal from "./LoadProgramModal";
 import WorkerService from "../../../../Service/WorkerService";
 import Screen, { ScreenRenderer } from "./Screen";
 import MemoryTerminal from "./MemoryTerminal";
+import { useState, useEffect } from "react";
 
 export default function EditorView(props: {
   runBtn: Function;
@@ -117,19 +118,19 @@ export default function EditorView(props: {
   }, [screenModalOpen])
 
   return (
-    <Stack direction={"row"} style={{ flex: 1, overflowY: "auto"}}>
-      
-      <AssemblyEditor onEditorChange={props.onEditorChange} />
+    <Stack direction={"column"} style={{ flex: 1, overflowY: "auto"}}>
       {screenModalOpen ? <Screen /> : <></>}
       <Slide
-        direction="bottom"
+        direction="right"
         in={consoleOpen}
         style={{
           zIndex: 10,
           pointerEvents: "none",
-          position: "absolute", 
-          bottom: 0,
-          left: 0,
+          position: "absolute",
+          top: 0,  // Set the top to 0 to align it horizontally
+          right: 0,  // Position it to the right of the editor
+          height: "100vh",  // Ensure it spans the full height
+          width: "300px",  // Adjust the width as needed for the terminal
         }}
       >
         <Box
@@ -141,14 +142,15 @@ export default function EditorView(props: {
           shadow="md"
           style={{
             position: "relative",
-            right: "11px",
-            width: "102vw",
-            height: "250px",
+            //right: "11px",
+            left:"auto",
+            width: "300px",
+            height: "40vh",
             overflowY: "auto",
             pointerEvents: "auto",
           }}
         >
-          <Stack direction="row" spacing={4} zIndex={10}>
+          <Stack direction="row" spacing={4} zIndex={10} justify="flex-end">
             <Button
               style={{
                 position: "relative",
@@ -180,6 +182,7 @@ export default function EditorView(props: {
               Debug
             </Button>
 
+
             <Button
               style={{
                 position: "relative",
@@ -197,6 +200,7 @@ export default function EditorView(props: {
             </Button>
           </Stack>
 
+
           {/* Console  */}
           {currentTerminal == 0 ? (
             <ConsoleTerminal
@@ -209,6 +213,7 @@ export default function EditorView(props: {
           ) : (
             <></>
           )}
+
 
           {/* Debug terminal  */}
           {currentTerminal == 1 ? (
@@ -223,6 +228,7 @@ export default function EditorView(props: {
             <></>
           )}
 
+
             {/* Registers terminal  */}
           {currentTerminal == 2 ? (
            <MemoryTerminal/>
@@ -230,10 +236,11 @@ export default function EditorView(props: {
             <></>
           )}
 
+
         </Box>
       </Slide>
       <Stack spacing={4}>
-        <Stack direction="column" spacing={4}>
+        <Stack direction="row" spacing={4}>
         <Tooltip label="Assemble">
             <IconButton
               icon={<BsFileEarmarkCode style={{ transform: "scale(1.4)" }} />}
@@ -411,9 +418,9 @@ export default function EditorView(props: {
               borderRadius={50}
               size="sm"
               onClick={() => {
-                function downloadFile() 
+                function downloadFile()
                 {
-                    
+                   
                     const element = document.createElement("a");
                     const file = new Blob([share.code], {type: 'text/plain'});
                     element.href = URL.createObjectURL(file);
@@ -421,6 +428,7 @@ export default function EditorView(props: {
                     document.body.appendChild(element); // Required for this to work in FireFox
                     element.click();
                 }
+
 
                 try{
                   downloadFile()
@@ -442,6 +450,7 @@ export default function EditorView(props: {
                   });
                 }
 
+
             }}
             >
               Download
@@ -454,6 +463,14 @@ export default function EditorView(props: {
         /> : <></>}
         <LoadProgramModal isOpen={loadProgramModalOpen} close={() => setLoadProgramModalOpen(false)} />
       </Stack>
+      <AssemblyEditor 
+        onEditorChange={props.onEditorChange} 
+        style={{ 
+          width: "800px", 
+          height: "250px", 
+          overflow: "auto"
+        }} 
+      />
     </Stack>
   );
 }

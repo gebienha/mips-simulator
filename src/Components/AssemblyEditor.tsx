@@ -6,6 +6,7 @@ import SharedData, { IProcessor } from "../Service/SharedData";
 
 function AssemblyEditor(props: {
   onEditorChange: (value: string | undefined, event: any) => void;
+  style?: React.CSSProperties; // Add style prop to the component's props
 }) {
   const monacoRef = useRef(null);
   const { colorMode } = useColorMode()
@@ -191,7 +192,8 @@ function AssemblyEditor(props: {
   return (
     <Editor
       onChange={props.onEditorChange}
-      height="80vh"
+      height={props.style?.height || "80vh"}  // Use height from style if passed, otherwise default to 80vh
+      width={props.style?.width || "100%"}   // Use width from style if passed, otherwise default to 100%
       defaultLanguage="mips"
       theme={colorMode == "dark" ? "mipsdark" : "mipslight"}
       defaultValue={
