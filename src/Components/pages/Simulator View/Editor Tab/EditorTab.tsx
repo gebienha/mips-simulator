@@ -117,7 +117,7 @@ export default function EditorView(props: {
   }, [screenModalOpen])
 
   return (
-    <Stack direction={"row"}>
+    <Stack direction={"row"} style={{ flex: 1, overflowY: "auto"}}>
       
       <AssemblyEditor onEditorChange={props.onEditorChange} />
       {screenModalOpen ? <Screen /> : <></>}
@@ -126,6 +126,10 @@ export default function EditorView(props: {
         in={consoleOpen}
         style={{
           zIndex: 10,
+          pointerEvents: "none",
+          position: "absolute", 
+          bottom: 0,
+          left: 0,
         }}
       >
         <Box
@@ -140,6 +144,8 @@ export default function EditorView(props: {
             right: "11px",
             width: "102vw",
             height: "250px",
+            overflowY: "auto",
+            pointerEvents: "auto",
           }}
         >
           <Stack direction="row" spacing={4} zIndex={10}>
