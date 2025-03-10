@@ -2,8 +2,11 @@ import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
+  Badge,
+  Flex,
   Icon,
   IconButton,
+  Input,
   Slide,
   Slider,
   SliderFilledTrack,
@@ -85,6 +88,71 @@ export default function EditorView(props: {
 
   const toast = useToast();
 
+  const txtProgramtitle = React.useRef<HTMLInputElement>(null);
+
+  //const EditorTab = (props) => {
+    const [registers, setRegisters] = useState({
+      T0: share.currentProcessor?.regbank[5],
+      T1: share.currentProcessor?.regbank[6],
+      T2: share.currentProcessor?.regbank[7],
+      T3: share.currentProcessor?.regbank[8],
+      T4: share.currentProcessor?.regbank[13],
+      T5: share.currentProcessor?.regbank[14],
+      T6: share.currentProcessor?.regbank[15],
+      A0: share.currentProcessor?.regbank[3],
+      A1: share.currentProcessor?.regbank[4],
+      A2: share.currentProcessor?.regbank[12],
+      A3: share.currentProcessor?.regbank[17],
+      S0: share.currentProcessor?.regbank[18],
+      S1: share.currentProcessor?.regbank[19],
+      S2: share.currentProcessor?.regbank[20],
+      S3: share.currentProcessor?.regbank[21],
+      S4: share.currentProcessor?.regbank[22],
+      S5: share.currentProcessor?.regbank[23],
+      S6: share.currentProcessor?.regbank[24],
+      RA: share.currentProcessor?.regbank[9],
+      SP: share.currentProcessor?.regbank[16],
+      V0: share.currentProcessor?.regbank[1],
+      V1: share.currentProcessor?.regbank[2],
+    });
+  
+    useEffect(() => {
+      // Listen for updates to the processor state
+      const interval = setInterval(() => {
+        setRegisters({
+          T0: share.currentProcessor?.regbank[5],
+          T1: share.currentProcessor?.regbank[6],
+          T2: share.currentProcessor?.regbank[7],
+          T3: share.currentProcessor?.regbank[8],
+          T4: share.currentProcessor?.regbank[13],
+          T5: share.currentProcessor?.regbank[14],
+          T6: share.currentProcessor?.regbank[15],
+          A0: share.currentProcessor?.regbank[3],
+          A1: share.currentProcessor?.regbank[4],
+          A2: share.currentProcessor?.regbank[12],
+          A3: share.currentProcessor?.regbank[17],
+          S0: share.currentProcessor?.regbank[18],
+          S1: share.currentProcessor?.regbank[19],
+          S2: share.currentProcessor?.regbank[20],
+          S3: share.currentProcessor?.regbank[21],
+          S4: share.currentProcessor?.regbank[22],
+          S5: share.currentProcessor?.regbank[23],
+          S6: share.currentProcessor?.regbank[24],
+          RA: share.currentProcessor?.regbank[9],
+          SP: share.currentProcessor?.regbank[16],
+          V0: share.currentProcessor?.regbank[1],
+          V1: share.currentProcessor?.regbank[2],
+        });
+      }, 1000); // Refresh the register values every 1000ms (1 second)
+  
+      return () => clearInterval(interval); // Clean up the interval when component unmounts
+    }, []);
+  
+    // Handle "Run" button click
+    const handleRun = () => {
+      props.runBtn(); // Assuming this triggers the program to run
+    };
+
   function setScreenRendererCanva(){
     try{
       let canva = (document.getElementById("screenCanvas") as HTMLCanvasElement).getContext("2d");
@@ -130,7 +198,7 @@ export default function EditorView(props: {
           top: 0,  // Set the top to 0 to align it horizontally
           right: 0,  // Position it to the right of the editor
           height: "100vh",  // Ensure it spans the full height
-          width: "300px",  // Adjust the width as needed for the terminal
+          width: "340px",  // Adjust the width as needed for the terminal
         }}
       >
         <Box
@@ -144,7 +212,7 @@ export default function EditorView(props: {
             position: "relative",
             //right: "11px",
             left:"auto",
-            width: "300px",
+            width: "340px",
             height: "40vh",
             overflowY: "auto",
             pointerEvents: "auto",
@@ -239,230 +307,236 @@ export default function EditorView(props: {
 
         </Box>
       </Slide>
-      <Stack spacing={4}>
-        <Stack direction="row" spacing={4}>
-        <Tooltip label="Assemble">
-            <IconButton
-              icon={<BsFileEarmarkCode style={{ transform: "scale(1.4)" }} />}
-              colorScheme="linkedin"
-              variant="solid"
-              onClick={() => {
-                props.assembleBtn()
-              }}
-              aria-label="Assemble program"
-              borderRadius={50}
-              size="sm"
-              zIndex={10}
-            >
-              Run
-            </IconButton>
-          </Tooltip>
-          <Tooltip label="Run">
-            <IconButton
-              icon={<HiPlayIcon />}
-              colorScheme="teal"
-              variant="solid"
-              onClick={() => props.runBtn()}
-              aria-label="Run program"
-              borderRadius={50}
-              size="sm"
-              zIndex={10}
-            >
-              Run
-            </IconButton>
-          </Tooltip>
-          <Tooltip label="Run next instruction">
-            <IconButton
-              icon={<ArrowForwardIcon style={{ transform: "scale(1.4)" }} />}
-              colorScheme="yellow"
-              aria-label="Run step"
-              variant="solid"
-              borderRadius={50}
-              size="sm"
-              onClick={() => props.callExecuteStep()}
-              zIndex={10}
-            >
-              Step
-            </IconButton>
-          </Tooltip>
-          <Tooltip label="Open terminal">
-            <IconButton
-              icon={<TerminalFill />}
-              color="white"
-              backgroundColor={SharedData.theme.editorBackground}
-              variant="solid"
-              aria-label="Open console"
-              borderRadius={50}
-              size="sm"
-              zIndex={10}
-              onClick={() => {
-                setConsoleOpen(!consoleOpen);
-              }}
-            >
-              Terminal
-            </IconButton>
-          </Tooltip>
-          <Tooltip label="Reset">
-            <IconButton
-              icon={<Icon as={RiRewindFill} />}
-              aria-label="Reset"
-              backgroundColor={SharedData.theme.editorBackground}
-              color="white"
-              borderRadius={50}
-              size="sm"
-              zIndex={10}
-              onClick={() => {
-                // share.currentProcessor?.reset();
-                // share.currentPc = share.pcStart;
-                WorkerService.instance.resetCpu();
-                share.currentProcessor?.reset()
-                if (share.currentProcessor){
-                  share.currentProcessor.halted = true;
-                  share.currentProcessor.frequency = 1000;
-                  share.processorFrequency = 1000;
-                }
-                clearInterval(share.interval ?? 0);
-              }}
-            >
-              Reset
-            </IconButton>
-          </Tooltip>
-          <Tooltip label="Screen">
-            <IconButton icon={<CgScreen/>}  aria-label={"Screen"} backgroundColor={SharedData.theme.editorBackground}
-              color="white"
-              borderRadius={50}
-              size="sm"
-              zIndex={10}
-              onClick={() => {
-                setScreenModalOpen(!screenModalOpen);
-              }} />
-          </Tooltip>
-          <Tooltip label="Configuration">
-            <IconButton
-              icon={
-                <Icon
-                  as={RiSettings2Fill}
-                  style={{ transform: "scale(1.2)" }}
-                />
-              }
-              zIndex={10}
-              aria-label="Configuration"
-              backgroundColor={SharedData.theme.editorBackground}
-              color="white"
-              borderRadius={50}
-              size="sm"
-              onClick={() => setConfigModalOpen(true)}
-            >
-              Configuration
-            </IconButton>
-          </Tooltip>
-          <Tooltip label="Save">
-            <IconButton
-              icon={
-                <Icon
-                  as={IoMdSave}
-                  style={{ transform: "scale(1.2)" }}
-                />
-              }
-              zIndex={10}
-              aria-label="Save"
-              backgroundColor={SharedData.theme.editorBackground}
-              color="white"
-              borderRadius={50}
-              size="sm"
-              onClick={() => {
-                share.saveProgram(share.programTitle.toLowerCase(), share.code);
-                toast({
-                  title: "Code saved",
-                  description: "Your code has been saved",
-                  status: "success",
-                  duration: 3000,
-                  isClosable: true,
-                });
+      <Box style={{ display: "flex", justifyContent: "flex-end", width: "800px" }}>
+        <Stack direction="row" align="centre" spacing={4} width="100%">
+        <Input placeholder="Recent" ref={txtProgramtitle} variant={"unstyled"} defaultValue={share.programTitle} onChange={(e) => {
+              // setProgramTitle(e.target.value);
+              share.programTitle = e.target.value;
             }}
-            >
-              Save
-            </IconButton>
-          </Tooltip>
-          <Tooltip label="Load">
-            <IconButton
-              icon={
-                <Icon
-                  as={FaFolderOpen}
-                  style={{ transform: "scale(1.2)" }}
-                />
-              }
-              zIndex={10}
-              aria-label="Load"
-              backgroundColor={SharedData.theme.editorBackground}
-              color="white"
-              borderRadius={50}
-              size="sm"
-              onClick={() => setLoadProgramModalOpen(true)}
-            >
-              Load
-            </IconButton>
-          </Tooltip>
-          <Tooltip label="Download Code">
-            <IconButton
-              icon={
-                <Icon
-                  as={FaDownload}
-                  style={{ transform: "scale(1.2)" }}
-                />
-              }
-              zIndex={10}
-              aria-label="Download Code"
-              backgroundColor={SharedData.theme.editorBackground}
-              color="white"
-              borderRadius={50}
-              size="sm"
-              onClick={() => {
-                function downloadFile()
-                {
-                   
-                    const element = document.createElement("a");
-                    const file = new Blob([share.code], {type: 'text/plain'});
-                    element.href = URL.createObjectURL(file);
-                    element.download = share.programTitle+".txt";
-                    document.body.appendChild(element); // Required for this to work in FireFox
-                    element.click();
+            size="sm"
+            width="200px" />
+          <Tooltip label="Assemble">
+              <IconButton
+                icon={<BsFileEarmarkCode style={{ transform: "scale(1.4)" }} />}
+                colorScheme="linkedin"
+                variant="solid"
+                onClick={() => {
+                  props.assembleBtn()
+                }}
+                aria-label="Assemble program"
+                borderRadius={50}
+                size="sm"
+                zIndex={10}
+              >
+                Run
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Run">
+              <IconButton
+                icon={<HiPlayIcon />}
+                colorScheme="teal"
+                variant="solid"
+                onClick={handleRun}
+                aria-label="Run program"
+                borderRadius={50}
+                size="sm"
+                zIndex={10}
+              >
+                Run
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Run next instruction">
+              <IconButton
+                icon={<ArrowForwardIcon style={{ transform: "scale(1.4)" }} />}
+                colorScheme="yellow"
+                aria-label="Run step"
+                variant="solid"
+                borderRadius={50}
+                size="sm"
+                onClick={() => props.callExecuteStep()}
+                zIndex={10}
+              >
+                Step
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Open terminal">
+              <IconButton
+                icon={<TerminalFill />}
+                color="white"
+                backgroundColor={SharedData.theme.editorBackground}
+                variant="solid"
+                aria-label="Open console"
+                borderRadius={50}
+                size="sm"
+                zIndex={10}
+                onClick={() => {
+                  setConsoleOpen(!consoleOpen);
+                }}
+              >
+                Terminal
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Reset">
+              <IconButton
+                icon={<Icon as={RiRewindFill} />}
+                aria-label="Reset"
+                backgroundColor={SharedData.theme.editorBackground}
+                color="white"
+                borderRadius={50}
+                size="sm"
+                zIndex={10}
+                onClick={() => {
+                  // share.currentProcessor?.reset();
+                  // share.currentPc = share.pcStart;
+                  WorkerService.instance.resetCpu();
+                  share.currentProcessor?.reset()
+                  if (share.currentProcessor){
+                    share.currentProcessor.halted = true;
+                    share.currentProcessor.frequency = 1000;
+                    share.processorFrequency = 1000;
+                  }
+                  clearInterval(share.interval ?? 0);
+                }}
+              >
+                Reset
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Screen">
+              <IconButton icon={<CgScreen/>}  aria-label={"Screen"} backgroundColor={SharedData.theme.editorBackground}
+                color="white"
+                borderRadius={50}
+                size="sm"
+                zIndex={10}
+                onClick={() => {
+                  setScreenModalOpen(!screenModalOpen);
+                }} />
+            </Tooltip>
+            <Tooltip label="Configuration">
+              <IconButton
+                icon={
+                  <Icon
+                    as={RiSettings2Fill}
+                    style={{ transform: "scale(1.2)" }}
+                  />
                 }
-
-
-                try{
-                  downloadFile()
+                zIndex={10}
+                aria-label="Configuration"
+                backgroundColor={SharedData.theme.editorBackground}
+                color="white"
+                borderRadius={50}
+                size="sm"
+                onClick={() => setConfigModalOpen(true)}
+              >
+                Configuration
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Save">
+              <IconButton
+                icon={
+                  <Icon
+                    as={IoMdSave}
+                    style={{ transform: "scale(1.2)" }}
+                  />
+                }
+                zIndex={10}
+                aria-label="Save"
+                backgroundColor={SharedData.theme.editorBackground}
+                color="white"
+                borderRadius={50}
+                size="sm"
+                onClick={() => {
+                  share.saveProgram(share.programTitle.toLowerCase(), share.code);
                   toast({
-                    title: "Code downloaded",
-                    description: "Your code has been downloaded",
+                    title: "Code saved",
+                    description: "Your code has been saved",
                     status: "success",
                     duration: 3000,
                     isClosable: true,
                   });
+              }}
+              >
+                Save
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Load">
+              <IconButton
+                icon={
+                  <Icon
+                    as={FaFolderOpen}
+                    style={{ transform: "scale(1.2)" }}
+                  />
                 }
-                catch{
-                  toast({
-                    title: "Something went wrong...",
-                    description: "There was an error while trying to download the code",
-                    status: "error",
-                    duration: 3000,
-                    isClosable: true,
-                  });
+                zIndex={10}
+                aria-label="Load"
+                backgroundColor={SharedData.theme.editorBackground}
+                color="white"
+                borderRadius={50}
+                size="sm"
+                onClick={() => setLoadProgramModalOpen(true)}
+              >
+                Load
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Download Code">
+              <IconButton
+                icon={
+                  <Icon
+                    as={FaDownload}
+                    style={{ transform: "scale(1.2)" }}
+                  />
                 }
+                zIndex={10}
+                aria-label="Download Code"
+                backgroundColor={SharedData.theme.editorBackground}
+                color="white"
+                borderRadius={50}
+                size="sm"
+                onClick={() => {
+                  function downloadFile()
+                  {
+                    
+                      const element = document.createElement("a");
+                      const file = new Blob([share.code], {type: 'text/plain'});
+                      element.href = URL.createObjectURL(file);
+                      element.download = share.programTitle+".txt";
+                      document.body.appendChild(element); // Required for this to work in FireFox
+                      element.click();
+                  }
 
 
-            }}
-            >
-              Download
-            </IconButton>
-          </Tooltip>
-        </Stack>
+                  try{
+                    downloadFile()
+                    toast({
+                      title: "Code downloaded",
+                      description: "Your code has been downloaded",
+                      status: "success",
+                      duration: 3000,
+                      isClosable: true,
+                    });
+                  }
+                  catch{
+                    toast({
+                      title: "Something went wrong...",
+                      description: "There was an error while trying to download the code",
+                      status: "error",
+                      duration: 3000,
+                      isClosable: true,
+                    });
+                  }
+
+
+              }}
+              >
+                Download
+              </IconButton>
+            </Tooltip>
+          </Stack>
         {configModalOpen ? <ConfigModal
           isOpen={configModalOpen}
           close={() => setConfigModalOpen(false)}
         /> : <></>}
         <LoadProgramModal isOpen={loadProgramModalOpen} close={() => setLoadProgramModalOpen(false)} />
-      </Stack>
+      </Box>
       <AssemblyEditor 
         onEditorChange={props.onEditorChange} 
         style={{ 
@@ -471,6 +545,134 @@ export default function EditorView(props: {
           overflow: "auto"
         }} 
       />
+      <Flex direction="column" fontFamily="monospace" style={{ marginBottom: 10 }}>
+        {/* T Group */}
+        <Flex direction="row" wrap="wrap" justify="flex-start">
+          <Badge colorScheme="green">
+            T0 <br />
+            {share.currentProcessor?.regbank[5].toString(16)} <br />
+            ({share.currentProcessor?.regbank[5].toString(10)})
+          </Badge>
+          <Badge colorScheme="green">
+            T1 <br />
+            {share.currentProcessor?.regbank[6].toString(16)} <br />
+            ({share.currentProcessor?.regbank[6].toString(10)})
+          </Badge>
+          <Badge colorScheme="green">
+            T2 <br />
+            {share.currentProcessor?.regbank[7].toString(16)} <br />
+            ({share.currentProcessor?.regbank[7].toString(10)})
+          </Badge>
+          <Badge colorScheme="green">
+            T3 <br />
+            {share.currentProcessor?.regbank[8].toString(16)} <br />
+            ({share.currentProcessor?.regbank[8].toString(10)})
+          </Badge>
+          <Badge colorScheme="green">
+            T4 <br />
+            {share.currentProcessor?.regbank[13].toString(16)} <br />
+            ({share.currentProcessor?.regbank[13].toString(10)})
+          </Badge>
+          <Badge colorScheme="green">
+            T5 <br />
+            {share.currentProcessor?.regbank[14].toString(16)} <br />
+            ({share.currentProcessor?.regbank[14].toString(10)})
+          </Badge>
+          <Badge colorScheme="green">
+            T6 <br />
+            {share.currentProcessor?.regbank[15].toString(16)} <br />
+            ({share.currentProcessor?.regbank[15].toString(10)})
+          </Badge>
+        </Flex>
+
+        {/* S Group */}
+        <Flex direction="row" wrap="wrap" justify="flex-start">
+          <Badge colorScheme="cyan">
+            S0 <br />
+            {share.currentProcessor?.regbank[18].toString(16)} <br />
+            ({share.currentProcessor?.regbank[18].toString(10)})
+          </Badge>
+          <Badge colorScheme="cyan">
+            S1 <br />
+            {share.currentProcessor?.regbank[19].toString(16)} <br />
+            ({share.currentProcessor?.regbank[19].toString(10)})
+          </Badge>
+          <Badge colorScheme="cyan">
+            S2 <br />
+            {share.currentProcessor?.regbank[20].toString(16)} <br />
+            ({share.currentProcessor?.regbank[20].toString(10)})
+          </Badge>
+          <Badge colorScheme="cyan">
+            S3 <br />
+            {share.currentProcessor?.regbank[21].toString(16)} <br />
+            ({share.currentProcessor?.regbank[21].toString(10)})
+          </Badge>
+          <Badge colorScheme="cyan">
+            S4 <br />
+            {share.currentProcessor?.regbank[22].toString(16)} <br />
+            ({share.currentProcessor?.regbank[22].toString(10)})
+          </Badge>
+          <Badge colorScheme="cyan">
+            S5 <br />
+            {share.currentProcessor?.regbank[23].toString(16)} <br />
+            ({share.currentProcessor?.regbank[23].toString(10)})
+          </Badge>
+          <Badge colorScheme="cyan">
+            S6 <br />
+            {share.currentProcessor?.regbank[24].toString(16)} <br />
+            ({share.currentProcessor?.regbank[24].toString(10)})
+          </Badge>
+        </Flex>
+
+        {/* A Group */}
+        <Flex direction="row" wrap="wrap" justify="flex-start">
+          <Badge colorScheme="red">
+            A0 <br />
+            {share.currentProcessor?.regbank[3].toString(16)} <br />
+            ({share.currentProcessor?.regbank[3].toString(10)})
+          </Badge>
+          <Badge colorScheme="red">
+            A1 <br />
+            {share.currentProcessor?.regbank[4].toString(16)} <br />
+            ({share.currentProcessor?.regbank[4].toString(10)})
+          </Badge>
+          <Badge colorScheme="red">
+            A2 <br />
+            {share.currentProcessor?.regbank[12].toString(16)} <br />
+            ({share.currentProcessor?.regbank[12].toString(10)})
+          </Badge>
+          <Badge colorScheme="red">
+            A3 <br />
+            {share.currentProcessor?.regbank[17].toString(16)} <br />
+            ({share.currentProcessor?.regbank[17].toString(10)})
+          </Badge>
+        </Flex>
+
+        {/* RA, SP, V0, V1 */}
+        <Flex direction="row" wrap="wrap" justify="flex-start">
+          <Badge colorScheme="red">
+            RA <br />
+            {share.currentProcessor?.regbank[9].toString(16)} <br />
+            ({share.currentProcessor?.regbank[9].toString(10)})
+          </Badge>
+          <Badge colorScheme="red">
+            SP <br />
+            {share.currentProcessor?.regbank[16].toString(16)} <br />
+            ({share.currentProcessor?.regbank[16].toString(10)})
+          </Badge>
+          <Badge colorScheme="purple">
+            V0 <br />
+            {share.currentProcessor?.regbank[1].toString(16)} <br />
+            ({share.currentProcessor?.regbank[1].toString(10)})
+          </Badge>
+          <Badge colorScheme="purple">
+            V1 <br />
+            {share.currentProcessor?.regbank[2].toString(16)} <br />
+            ({share.currentProcessor?.regbank[2].toString(10)})
+          </Badge>
+        </Flex>
+      </Flex>
+
     </Stack>
   );
-}
+};
