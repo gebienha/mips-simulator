@@ -57,8 +57,20 @@ export default function MemoryTerminal() {
               let convertToBin = SimulatorService.getInstance().assembleRegister(cmd)
               let index = new TemplateProcessor().mapRegister(parseInt(convertToBin,2))
               let reg = shared.currentProcessor?.regbank[index]
-              setTxtArea(txtArea+`${reg}\n`)
-              shared.memoryterminalText = txtArea+`${reg}\n`
+
+              // Check if reg is valid (not undefined or null)
+              if (reg != null) {
+                // Convert the register value to decimal and hexadecimal
+                let regDecimal = reg;
+                let regHex = regDecimal.toString(16).toUpperCase();  // Hexadecimal in uppercase
+
+                // Display both decimal and hexadecimal values
+                setTxtArea(txtArea + `Decimal: ${regDecimal}, Hex: 0x${regHex}\n`);
+                shared.memoryterminalText = txtArea + `Decimal: ${regDecimal}, Hex: 0x${regHex}\n`;
+              } else {
+                setTxtArea(txtArea + `Register not found or invalid.\n`);
+                shared.memoryterminalText = txtArea + `Register not found or invalid.\n`;
+              }
 
             }
             else

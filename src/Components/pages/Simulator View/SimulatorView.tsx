@@ -218,12 +218,12 @@ export default function SimulatorView() {
       <TabPanels>
         <TabPanel>
           <Stack>
-            <Input placeholder="Recent" ref={txtProgramtitle} variant={"unstyled"} defaultValue={share.programTitle} onChange={(e) => {
+            {/* <Input placeholder="Recent" ref={txtProgramtitle} variant={"unstyled"} defaultValue={share.programTitle} onChange={(e) => {
               // setProgramTitle(e.target.value);
               share.programTitle = e.target.value;
             }}
             size="sm"
-            width="200px" />
+            width="200px" /> */}
             <EditorView onEditorChange={onEditorChange} assembleBtn={assembleCode} runBtn={runCode} callExecuteStep={callExecuteStep} />
           </Stack>
         </TabPanel>

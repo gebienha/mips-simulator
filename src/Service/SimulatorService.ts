@@ -8,6 +8,7 @@ type Label = {
   address: number;
 };
 
+
 export default class SimulatorService {
   public editorValue: string = "";
   public assembledCode: string = "";
