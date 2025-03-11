@@ -103,7 +103,7 @@ export default function EditorView(props: {
     V1: share.currentProcessor?.regbank[2],
   });
 
-  const [breakpoints, setBreakpoints] = useState<number[]>([]);
+  //const [breakpoints, setBreakpoints] = useState<number[]>([]);
 
   useEffect(() => {
     // Listen for updates to the processor state
@@ -168,8 +168,10 @@ export default function EditorView(props: {
     }, share.processorFrequency); // Adjust the delay as needed
   };
 
-  const handleSetBreakpoint = (lineNumber: number) => {
-    setBreakpoints([...breakpoints, lineNumber]);
+  const handleSetBreakpoint = (lineNumber: number | undefined) => {
+    if (lineNumber !== undefined) {
+      setBreakpoints([...breakpoints, lineNumber]);
+    }
   };
 
   const handleRemoveBreakpoint = (lineNumber: number) => {
