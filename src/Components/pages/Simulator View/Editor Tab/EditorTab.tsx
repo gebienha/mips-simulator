@@ -165,7 +165,7 @@ export default function EditorView(props: {
       } else {
         props.callExecuteStep();
       }
-    }, 1000); // Adjust the delay as needed
+    }, share.processorFrequency); // Adjust the delay as needed
   };
 
   const handleSetBreakpoint = (lineNumber: number) => {
