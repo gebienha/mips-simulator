@@ -198,7 +198,7 @@ export default function EditorView(props: {
           top: 0,  // Set the top to 0 to align it horizontally
           right: 0,  // Position it to the right of the editor
           height: "100vh",  // Ensure it spans the full height
-          width: "340px",  // Adjust the width as needed for the terminal
+          width: "320px",  // Adjust the width as needed for the terminal
         }}
       >
         <Box
@@ -212,7 +212,7 @@ export default function EditorView(props: {
             position: "relative",
             //right: "11px",
             left:"auto",
-            width: "340px",
+            width: "320px",
             height: "40vh",
             overflowY: "auto",
             pointerEvents: "auto",
