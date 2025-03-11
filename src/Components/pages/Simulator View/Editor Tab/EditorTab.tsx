@@ -2,47 +2,35 @@ import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  Badge,
-  Flex,
   Icon,
   IconButton,
   Input,
   Slide,
-  Slider,
-  SliderFilledTrack,
-  SliderMark,
-  SliderThumb,
-  SliderTrack,
   Stack,
-  Textarea,
-  Text,
   Tooltip,
-  Select,
   useToast,
+  Flex, 
+  Badge,
 } from "@chakra-ui/react";
-import React from "react";
-import { BsTerminalFill } from "react-icons/bs";
-import {IoMdSave} from "react-icons/io";
+import React, { useState, useEffect } from "react";
+import { BsTerminalFill, BsPauseFill } from "react-icons/bs";
 import { HiPlay } from "react-icons/hi";
-import {CgScreen} from "react-icons/cg";
-import { MdDelete } from "react-icons/md";
-import { BsFileEarmarkCode } from "react-icons/bs";
+import { CgScreen } from "react-icons/cg";
 import { RiRewindFill, RiSettings2Fill } from "react-icons/ri";
-import SISMIPS from "../../../../Hardware/SIS Mips/SIS";
-import Logger from "../../../../Service/Logger";
+import { FaDownload, FaFolderOpen } from "react-icons/fa";
+import { IoMdSave } from "react-icons/io";
+import { BsFileEarmarkCode } from "react-icons/bs";
 import SharedData from "../../../../Service/SharedData";
+import WorkerService from "../../../../Service/WorkerService";
+import Logger from "../../../../Service/Logger";
 import SimulatorService from "../../../../Service/SimulatorService";
 import AssemblyEditor from "../../../AssemblyEditor";
 import ConfigModal from "./ConfigModal";
 import ConsoleTerminal from "./ConsoleTerminal";
 import DebugTerminal from "./DebugTerminal";
-import MonoMIPS from "../../../../Hardware/Mono Mips/MonoMIPS";
-import { FaDownload, FaFolderOpen } from "react-icons/fa";
 import LoadProgramModal from "./LoadProgramModal";
-import WorkerService from "../../../../Service/WorkerService";
 import Screen, { ScreenRenderer } from "./Screen";
 import MemoryTerminal from "./MemoryTerminal";
-import { useState, useEffect } from "react";
 
 export default function EditorView(props: {
   runBtn: Function;
@@ -50,37 +38,37 @@ export default function EditorView(props: {
   onEditorChange: (value: string | undefined, event: any) => void;
   callExecuteStep: Function;
 }) {
-  //Icons
+  // Icons
   const HiPlayIcon = () => (
     <Icon as={HiPlay} style={{ transform: "scale(1.4)" }} />
   );
   const TerminalFill = () => <Icon as={BsTerminalFill} />;
 
   // Handles the visibility of the console and debug terminal
-  const [consoleOpen, setConsoleOpen] = React.useState<boolean>(false);
+  const [consoleOpen, setConsoleOpen] = useState<boolean>(false);
 
   // Handles the state of the console and debug terminal
-  const [consoleTxt, setConsoleTxt] = React.useState<string>("");
+  const [consoleTxt, setConsoleTxt] = useState<string>("");
 
-  // Handles witch terminal is currently selected
-  const [currentTerminal, setCurrentTerminal] = React.useState<number>(0);
+  // Handles which terminal is currently selected
+  const [currentTerminal, setCurrentTerminal] = useState<number>(0);
 
   // Handles the information text of the debug terminal
-  const [debugTxt, setDebugTxt] = React.useState<string>("");
+  const [debugTxt, setDebugTxt] = useState<string>("");
 
   // Handles the visibility of the configuration modal
-  const [configModalOpen, setConfigModalOpen] = React.useState<boolean>(false);
+  const [configModalOpen, setConfigModalOpen] = useState<boolean>(false);
 
   // Handles the visibility of the load program modal
-  const [loadProgramModalOpen, setLoadProgramModalOpen] = React.useState<boolean>(false);
+  const [loadProgramModalOpen, setLoadProgramModalOpen] = useState<boolean>(false);
 
   // Handles the visibility of the screen modal
-  const [screenModalOpen, setScreenModalOpen] = React.useState<boolean>(false);
+  const [screenModalOpen, setScreenModalOpen] = useState<boolean>(false);
 
   // SharedData instance that holds the shared state of the application
   let share: SharedData = SharedData.instance;
 
-  //Logger instance
+  // Logger instance
   let log: Logger = Logger.instance;
 
   // SimulatorService instance that handles the assembly of the code
@@ -90,83 +78,105 @@ export default function EditorView(props: {
 
   const txtProgramtitle = React.useRef<HTMLInputElement>(null);
 
-  //const EditorTab = (props) => {
-    const [registers, setRegisters] = useState({
-      T0: share.currentProcessor?.regbank[5],
-      T1: share.currentProcessor?.regbank[6],
-      T2: share.currentProcessor?.regbank[7],
-      T3: share.currentProcessor?.regbank[8],
-      T4: share.currentProcessor?.regbank[13],
-      T5: share.currentProcessor?.regbank[14],
-      T6: share.currentProcessor?.regbank[15],
-      A0: share.currentProcessor?.regbank[3],
-      A1: share.currentProcessor?.regbank[4],
-      A2: share.currentProcessor?.regbank[12],
-      A3: share.currentProcessor?.regbank[17],
-      S0: share.currentProcessor?.regbank[18],
-      S1: share.currentProcessor?.regbank[19],
-      S2: share.currentProcessor?.regbank[20],
-      S3: share.currentProcessor?.regbank[21],
-      S4: share.currentProcessor?.regbank[22],
-      S5: share.currentProcessor?.regbank[23],
-      S6: share.currentProcessor?.regbank[24],
-      RA: share.currentProcessor?.regbank[9],
-      SP: share.currentProcessor?.regbank[16],
-      V0: share.currentProcessor?.regbank[1],
-      V1: share.currentProcessor?.regbank[2],
-    });
-  
-    useEffect(() => {
-      // Listen for updates to the processor state
-      const interval = setInterval(() => {
-        setRegisters({
-          T0: share.currentProcessor?.regbank[5],
-          T1: share.currentProcessor?.regbank[6],
-          T2: share.currentProcessor?.regbank[7],
-          T3: share.currentProcessor?.regbank[8],
-          T4: share.currentProcessor?.regbank[13],
-          T5: share.currentProcessor?.regbank[14],
-          T6: share.currentProcessor?.regbank[15],
-          A0: share.currentProcessor?.regbank[3],
-          A1: share.currentProcessor?.regbank[4],
-          A2: share.currentProcessor?.regbank[12],
-          A3: share.currentProcessor?.regbank[17],
-          S0: share.currentProcessor?.regbank[18],
-          S1: share.currentProcessor?.regbank[19],
-          S2: share.currentProcessor?.regbank[20],
-          S3: share.currentProcessor?.regbank[21],
-          S4: share.currentProcessor?.regbank[22],
-          S5: share.currentProcessor?.regbank[23],
-          S6: share.currentProcessor?.regbank[24],
-          RA: share.currentProcessor?.regbank[9],
-          SP: share.currentProcessor?.regbank[16],
-          V0: share.currentProcessor?.regbank[1],
-          V1: share.currentProcessor?.regbank[2],
-        });
-      }, 1000); // Refresh the register values every 1000ms (1 second)
-  
-      return () => clearInterval(interval); // Clean up the interval when component unmounts
-    }, []);
-  
-    // Handle "Run" button click
-    const handleRun = () => {
-      props.runBtn(); // Assuming this triggers the program to run
-    };
+  const [registers, setRegisters] = useState({
+    T0: share.currentProcessor?.regbank[5],
+    T1: share.currentProcessor?.regbank[6],
+    T2: share.currentProcessor?.regbank[7],
+    T3: share.currentProcessor?.regbank[8],
+    T4: share.currentProcessor?.regbank[13],
+    T5: share.currentProcessor?.regbank[14],
+    T6: share.currentProcessor?.regbank[15],
+    A0: share.currentProcessor?.regbank[3],
+    A1: share.currentProcessor?.regbank[4],
+    A2: share.currentProcessor?.regbank[12],
+    A3: share.currentProcessor?.regbank[17],
+    S0: share.currentProcessor?.regbank[18],
+    S1: share.currentProcessor?.regbank[19],
+    S2: share.currentProcessor?.regbank[20],
+    S3: share.currentProcessor?.regbank[21],
+    S4: share.currentProcessor?.regbank[22],
+    S5: share.currentProcessor?.regbank[23],
+    S6: share.currentProcessor?.regbank[24],
+    RA: share.currentProcessor?.regbank[9],
+    SP: share.currentProcessor?.regbank[16],
+    V0: share.currentProcessor?.regbank[1],
+    V1: share.currentProcessor?.regbank[2],
+  });
 
-  function setScreenRendererCanva(){
-    try{
+  useEffect(() => {
+    // Listen for updates to the processor state
+    const interval = setInterval(() => {
+      setRegisters({
+        T0: share.currentProcessor?.regbank[5],
+        T1: share.currentProcessor?.regbank[6],
+        T2: share.currentProcessor?.regbank[7],
+        T3: share.currentProcessor?.regbank[8],
+        T4: share.currentProcessor?.regbank[13],
+        T5: share.currentProcessor?.regbank[14],
+        T6: share.currentProcessor?.regbank[15],
+        A0: share.currentProcessor?.regbank[3],
+        A1: share.currentProcessor?.regbank[4],
+        A2: share.currentProcessor?.regbank[12],
+        A3: share.currentProcessor?.regbank[17],
+        S0: share.currentProcessor?.regbank[18],
+        S1: share.currentProcessor?.regbank[19],
+        S2: share.currentProcessor?.regbank[20],
+        S3: share.currentProcessor?.regbank[21],
+        S4: share.currentProcessor?.regbank[22],
+        S5: share.currentProcessor?.regbank[23],
+        S6: share.currentProcessor?.regbank[24],
+        RA: share.currentProcessor?.regbank[9],
+        SP: share.currentProcessor?.regbank[16],
+        V0: share.currentProcessor?.regbank[1],
+        V1: share.currentProcessor?.regbank[2],
+      });
+    }, 1000); // Refresh the register values every 1000ms (1 second)
+
+    return () => clearInterval(interval); // Clean up the interval when component unmounts
+  }, []);
+
+  // Add pause state
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Add pause icon component
+  const PauseIcon = () => (
+    <Icon as={BsPauseFill} style={{ transform: "scale(1.4)" }} />
+  );
+
+  // Add pause handler
+  const handlePause = () => {
+    setIsPaused(!isPaused);
+    if (share.currentProcessor) {
+      share.currentProcessor.isPaused = !isPaused;
+      if (!isPaused) {
+        // If we're pausing
+        WorkerService.instance.pauseExecution();
+      }
+    }
+  };
+
+  // Handle "Run" button click
+  const handleRun = () => {
+    const interval = setInterval(() => {
+      if (share.currentProcessor?.isPaused || share.currentProcessor?.halted) {
+        clearInterval(interval);
+      } else {
+        props.callExecuteStep();
+      }
+    }, share.processorFrequency); // Adjust the delay as needed
+  };
+
+  function setScreenRendererCanva() {
+    try {
       let canva = (document.getElementById("screenCanvas") as HTMLCanvasElement).getContext("2d");
       ScreenRenderer.instance.draw = canva;
-    }
-    catch (e){
+    } catch (e) {
       console.log("error defining canva", e);
     }
   }
 
-  
-
   // Updates the console and debug terminal when the log changes
-  React.useEffect(() => {
+  useEffect(() => {
     Logger.instance.onLogChange(() => {
       setConsoleTxt(log.getConsole() + log.getErrors());
       setDebugTxt(log.getDebug());
@@ -181,12 +191,12 @@ export default function EditorView(props: {
     });
   }, [consoleOpen, debugTxt]);
 
-  React.useEffect(()=> {
+  useEffect(() => {
     setScreenRendererCanva();
-  }, [screenModalOpen])
+  }, [screenModalOpen]);
 
   return (
-    <Stack direction={"column"} style={{ flex: 1, overflowY: "auto"}}>
+    <Stack direction={"column"} style={{ flex: 1, overflowY: "auto" }}>
       {screenModalOpen ? <Screen /> : <></>}
       <Slide
         direction="right"
@@ -195,10 +205,10 @@ export default function EditorView(props: {
           zIndex: 10,
           pointerEvents: "none",
           position: "absolute",
-          top: 0,  // Set the top to 0 to align it horizontally
-          right: 0,  // Position it to the right of the editor
-          height: "100vh",  // Ensure it spans the full height
-          width: "320px",  // Adjust the width as needed for the terminal
+          top: 0, // Set the top to 0 to align it horizontally
+          right: 0, // Position it to the right of the editor
+          height: "100vh", // Ensure it spans the full height
+          width: "320px", // Adjust the width as needed for the terminal
         }}
       >
         <Box
@@ -210,8 +220,7 @@ export default function EditorView(props: {
           shadow="md"
           style={{
             position: "relative",
-            //right: "11px",
-            left:"auto",
+            left: "auto",
             width: "320px",
             height: "40vh",
             overflowY: "auto",
@@ -228,7 +237,7 @@ export default function EditorView(props: {
                 borderRadius: "0px",
                 top: -40,
                 right: 20,
-                zIndex:10
+                zIndex: 10,
               }}
               onClick={() => setCurrentTerminal(0)}
             >
@@ -243,13 +252,12 @@ export default function EditorView(props: {
                 borderRadius: "0px",
                 top: -40,
                 right: 20,
-                zIndex:10
+                zIndex: 10,
               }}
               onClick={() => setCurrentTerminal(1)}
             >
               Debug
             </Button>
-
 
             <Button
               style={{
@@ -260,14 +268,13 @@ export default function EditorView(props: {
                 borderRadius: "0px",
                 top: -40,
                 right: 20,
-                zIndex:10
+                zIndex: 10,
               }}
               onClick={() => setCurrentTerminal(2)}
             >
               Memory
             </Button>
           </Stack>
-
 
           {/* Console  */}
           {currentTerminal == 0 ? (
@@ -282,7 +289,6 @@ export default function EditorView(props: {
             <></>
           )}
 
-
           {/* Debug terminal  */}
           {currentTerminal == 1 ? (
             <DebugTerminal
@@ -296,254 +302,248 @@ export default function EditorView(props: {
             <></>
           )}
 
-
-            {/* Registers terminal  */}
+          {/* Registers terminal  */}
           {currentTerminal == 2 ? (
-           <MemoryTerminal/>
+            <MemoryTerminal />
           ) : (
             <></>
           )}
-
-
         </Box>
       </Slide>
       <Box style={{ display: "flex", justifyContent: "flex-end", width: "800px" }}>
         <Stack direction="row" align="centre" spacing={4} width="100%">
-        <Input placeholder="Recent" ref={txtProgramtitle} variant={"unstyled"} defaultValue={share.programTitle} onChange={(e) => {
-              // setProgramTitle(e.target.value);
+          <Input
+            placeholder="Recent"
+            ref={txtProgramtitle}
+            variant={"unstyled"}
+            defaultValue={share.programTitle}
+            onChange={(e) => {
               share.programTitle = e.target.value;
             }}
             size="sm"
-            width="200px" />
+            width="200px"
+          />
           <Tooltip label="Assemble">
-              <IconButton
-                icon={<BsFileEarmarkCode style={{ transform: "scale(1.4)" }} />}
-                colorScheme="linkedin"
-                variant="solid"
-                onClick={() => {
-                  props.assembleBtn()
-                }}
-                aria-label="Assemble program"
-                borderRadius={50}
-                size="sm"
-                zIndex={10}
-              >
-                Run
-              </IconButton>
-            </Tooltip>
-            <Tooltip label="Run">
-              <IconButton
-                icon={<HiPlayIcon />}
-                colorScheme="teal"
-                variant="solid"
-                onClick={handleRun}
-                aria-label="Run program"
-                borderRadius={50}
-                size="sm"
-                zIndex={10}
-              >
-                Run
-              </IconButton>
-            </Tooltip>
-            <Tooltip label="Run next instruction">
-              <IconButton
-                icon={<ArrowForwardIcon style={{ transform: "scale(1.4)" }} />}
-                colorScheme="yellow"
-                aria-label="Run step"
-                variant="solid"
-                borderRadius={50}
-                size="sm"
-                onClick={() => props.callExecuteStep()}
-                zIndex={10}
-              >
-                Step
-              </IconButton>
-            </Tooltip>
-            <Tooltip label="Open terminal">
-              <IconButton
-                icon={<TerminalFill />}
-                color="white"
-                backgroundColor={SharedData.theme.editorBackground}
-                variant="solid"
-                aria-label="Open console"
-                borderRadius={50}
-                size="sm"
-                zIndex={10}
-                onClick={() => {
-                  setConsoleOpen(!consoleOpen);
-                }}
-              >
-                Terminal
-              </IconButton>
-            </Tooltip>
-            <Tooltip label="Reset">
-              <IconButton
-                icon={<Icon as={RiRewindFill} />}
-                aria-label="Reset"
-                backgroundColor={SharedData.theme.editorBackground}
-                color="white"
-                borderRadius={50}
-                size="sm"
-                zIndex={10}
-                onClick={() => {
-                  // share.currentProcessor?.reset();
-                  // share.currentPc = share.pcStart;
-                  WorkerService.instance.resetCpu();
-                  share.currentProcessor?.reset()
-                  if (share.currentProcessor){
-                    share.currentProcessor.halted = true;
-                    share.currentProcessor.frequency = 1000;
-                    share.processorFrequency = 1000;
-                  }
-                  clearInterval(share.interval ?? 0);
-                }}
-              >
-                Reset
-              </IconButton>
-            </Tooltip>
-            <Tooltip label="Screen">
-              <IconButton icon={<CgScreen/>}  aria-label={"Screen"} backgroundColor={SharedData.theme.editorBackground}
-                color="white"
-                borderRadius={50}
-                size="sm"
-                zIndex={10}
-                onClick={() => {
-                  setScreenModalOpen(!screenModalOpen);
-                }} />
-            </Tooltip>
-            <Tooltip label="Configuration">
-              <IconButton
-                icon={
-                  <Icon
-                    as={RiSettings2Fill}
-                    style={{ transform: "scale(1.2)" }}
-                  />
+            <IconButton
+              icon={<BsFileEarmarkCode style={{ transform: "scale(1.4)" }} />}
+              colorScheme="linkedin"
+              variant="solid"
+              onClick={() => {
+                props.assembleBtn();
+              }}
+              aria-label="Assemble program"
+              borderRadius={50}
+              size="sm"
+              zIndex={10}
+            >
+              Run
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Run">
+            <IconButton
+              icon={<HiPlayIcon />}
+              colorScheme="teal"
+              variant="solid"
+              onClick={handleRun}
+              aria-label="Run program"
+              borderRadius={50}
+              size="sm"
+              zIndex={10}
+            >
+              Run
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Pause">
+            <IconButton
+              icon={<PauseIcon />}
+              colorScheme="orange"
+              variant="solid"
+              onClick={handlePause}
+              aria-label="Pause program"
+              borderRadius={50}
+              size="sm"
+              zIndex={10}
+              isDisabled={!share.currentProcessor}
+            >
+              {isPaused ? "Resume" : "Pause"}
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Run next instruction">
+            <IconButton
+              icon={<ArrowForwardIcon style={{ transform: "scale(1.4)" }} />}
+              colorScheme="yellow"
+              aria-label="Run step"
+              variant="solid"
+              borderRadius={50}
+              size="sm"
+              onClick={() => props.callExecuteStep()}
+              zIndex={10}
+            >
+              Step
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Open terminal">
+            <IconButton
+              icon={<TerminalFill />}
+              color="white"
+              backgroundColor={SharedData.theme.editorBackground}
+              variant="solid"
+              aria-label="Open console"
+              borderRadius={50}
+              size="sm"
+              zIndex={10}
+              onClick={() => {
+                setConsoleOpen(!consoleOpen);
+              }}
+            >
+              Terminal
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Reset">
+            <IconButton
+              icon={<Icon as={RiRewindFill} />}
+              aria-label="Reset"
+              backgroundColor={SharedData.theme.editorBackground}
+              color="white"
+              borderRadius={50}
+              size="sm"
+              zIndex={10}
+              onClick={() => {
+                WorkerService.instance.resetCpu();
+                share.currentProcessor?.reset();
+                if (share.currentProcessor) {
+                  share.currentProcessor.halted = true;
+                  share.currentProcessor.frequency = 1000;
+                  share.processorFrequency = 1000;
                 }
-                zIndex={10}
-                aria-label="Configuration"
-                backgroundColor={SharedData.theme.editorBackground}
-                color="white"
-                borderRadius={50}
-                size="sm"
-                onClick={() => setConfigModalOpen(true)}
-              >
-                Configuration
-              </IconButton>
-            </Tooltip>
-            <Tooltip label="Save">
-              <IconButton
-                icon={
-                  <Icon
-                    as={IoMdSave}
-                    style={{ transform: "scale(1.2)" }}
-                  />
+                clearInterval(share.interval ?? 0);
+              }}
+            >
+              Reset
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Screen">
+            <IconButton
+              icon={<CgScreen />}
+              aria-label={"Screen"}
+              backgroundColor={SharedData.theme.editorBackground}
+              color="white"
+              borderRadius={50}
+              size="sm"
+              zIndex={10}
+              onClick={() => {
+                setScreenModalOpen(!screenModalOpen);
+              }}
+            />
+          </Tooltip>
+          <Tooltip label="Configuration">
+            <IconButton
+              icon={<Icon as={RiSettings2Fill} style={{ transform: "scale(1.2)" }} />}
+              zIndex={10}
+              aria-label="Configuration"
+              backgroundColor={SharedData.theme.editorBackground}
+              color="white"
+              borderRadius={50}
+              size="sm"
+              onClick={() => setConfigModalOpen(true)}
+            >
+              Configuration
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Save">
+            <IconButton
+              icon={<Icon as={IoMdSave} style={{ transform: "scale(1.2)" }} />}
+              zIndex={10}
+              aria-label="Save"
+              backgroundColor={SharedData.theme.editorBackground}
+              color="white"
+              borderRadius={50}
+              size="sm"
+              onClick={() => {
+                share.saveProgram(share.programTitle.toLowerCase(), share.code);
+                toast({
+                  title: "Code saved",
+                  description: "Your code has been saved",
+                  status: "success",
+                  duration: 3000,
+                  isClosable: true,
+                });
+              }}
+            >
+              Save
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Load">
+            <IconButton
+              icon={<Icon as={FaFolderOpen} style={{ transform: "scale(1.2)" }} />}
+              zIndex={10}
+              aria-label="Load"
+              backgroundColor={SharedData.theme.editorBackground}
+              color="white"
+              borderRadius={50}
+              size="sm"
+              onClick={() => setLoadProgramModalOpen(true)}
+            >
+              Load
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Download Code">
+            <IconButton
+              icon={<Icon as={FaDownload} style={{ transform: "scale(1.2)" }} />}
+              zIndex={10}
+              aria-label="Download Code"
+              backgroundColor={SharedData.theme.editorBackground}
+              color="white"
+              borderRadius={50}
+              size="sm"
+              onClick={() => {
+                function downloadFile() {
+                  const element = document.createElement("a");
+                  const file = new Blob([share.code], { type: "text/plain" });
+                  element.href = URL.createObjectURL(file);
+                  element.download = share.programTitle + ".txt";
+                  document.body.appendChild(element); // Required for this to work in FireFox
+                  element.click();
                 }
-                zIndex={10}
-                aria-label="Save"
-                backgroundColor={SharedData.theme.editorBackground}
-                color="white"
-                borderRadius={50}
-                size="sm"
-                onClick={() => {
-                  share.saveProgram(share.programTitle.toLowerCase(), share.code);
+
+                try {
+                  downloadFile();
                   toast({
-                    title: "Code saved",
-                    description: "Your code has been saved",
+                    title: "Code downloaded",
+                    description: "Your code has been downloaded",
                     status: "success",
                     duration: 3000,
                     isClosable: true,
                   });
-              }}
-              >
-                Save
-              </IconButton>
-            </Tooltip>
-            <Tooltip label="Load">
-              <IconButton
-                icon={
-                  <Icon
-                    as={FaFolderOpen}
-                    style={{ transform: "scale(1.2)" }}
-                  />
+                } catch {
+                  toast({
+                    title: "Something went wrong...",
+                    description: "There was an error while trying to download the code",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                  });
                 }
-                zIndex={10}
-                aria-label="Load"
-                backgroundColor={SharedData.theme.editorBackground}
-                color="white"
-                borderRadius={50}
-                size="sm"
-                onClick={() => setLoadProgramModalOpen(true)}
-              >
-                Load
-              </IconButton>
-            </Tooltip>
-            <Tooltip label="Download Code">
-              <IconButton
-                icon={
-                  <Icon
-                    as={FaDownload}
-                    style={{ transform: "scale(1.2)" }}
-                  />
-                }
-                zIndex={10}
-                aria-label="Download Code"
-                backgroundColor={SharedData.theme.editorBackground}
-                color="white"
-                borderRadius={50}
-                size="sm"
-                onClick={() => {
-                  function downloadFile()
-                  {
-                    
-                      const element = document.createElement("a");
-                      const file = new Blob([share.code], {type: 'text/plain'});
-                      element.href = URL.createObjectURL(file);
-                      element.download = share.programTitle+".txt";
-                      document.body.appendChild(element); // Required for this to work in FireFox
-                      element.click();
-                  }
-
-
-                  try{
-                    downloadFile()
-                    toast({
-                      title: "Code downloaded",
-                      description: "Your code has been downloaded",
-                      status: "success",
-                      duration: 3000,
-                      isClosable: true,
-                    });
-                  }
-                  catch{
-                    toast({
-                      title: "Something went wrong...",
-                      description: "There was an error while trying to download the code",
-                      status: "error",
-                      duration: 3000,
-                      isClosable: true,
-                    });
-                  }
-
-
               }}
-              >
-                Download
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        {configModalOpen ? <ConfigModal
-          isOpen={configModalOpen}
-          close={() => setConfigModalOpen(false)}
-        /> : <></>}
+            >
+              Download
+            </IconButton>
+          </Tooltip>
+        </Stack>
+        {configModalOpen ? (
+          <ConfigModal isOpen={configModalOpen} close={() => setConfigModalOpen(false)} />
+        ) : (
+          <></>
+        )}
         <LoadProgramModal isOpen={loadProgramModalOpen} close={() => setLoadProgramModalOpen(false)} />
       </Box>
-      <AssemblyEditor 
-        onEditorChange={props.onEditorChange} 
-        style={{ 
-          width: "800px", 
-          height: "250px", 
-          overflow: "auto"
-        }} 
+      <AssemblyEditor
+        onEditorChange={props.onEditorChange}
+        style={{
+          width: "800px",
+          height: "250px",
+          overflow: "auto",
+        }}
       />
       <Flex direction="column" fontFamily="monospace" style={{ marginBottom: 10 }}>
         {/* T Group */}

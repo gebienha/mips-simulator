@@ -1,24 +1,18 @@
 import TemplateProcessor from "../TemplatePorcessor";
+import WorkerService from "../../Service/WorkerService";
+import IProcessor from "../../Service/SharedData";
 
 export default class MonoMIPS extends TemplateProcessor {
 
-  public refname : string = "mono"
+  public refname: string = "mono";
 
-
-  // push and pop are not added because they are pseudo instructions
-  // the assembler converts them to addi and sw/lw
   public instructionSet: Array<string> = [
     "add",
     "addi",
     "sub",
-    "mult",
-    "div",
-    "mfhi",
-    "mflo",
     "and",
     "or",
     "slt",
-    "slti",
     "lw",
     "sw",
     "beq",
@@ -26,9 +20,27 @@ export default class MonoMIPS extends TemplateProcessor {
     "j",
     "jal",
     "jr",
-    "sll",
-    "srl",
     "call",
   ];
 
+  public availableRegisters: Array<string> = [
+    "00000", // $zero
+    "00010", // $v0
+    "00011", // $v1
+    "00100", // $a0
+    "00101", // $a1
+    "01000", // $t0
+    "01001", // $t1
+    "01010", // $t2
+    "01011", // $t3
+    "11111", // $ra
+  ];
+
+  // Modify the execute method to check for pause state
+  execute() {
+    if (this._isPaused) {
+      return;
+    }
+    // ...existing execution code...
+  }
 }

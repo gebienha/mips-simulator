@@ -25,7 +25,8 @@ export interface IProcessor {
   useDebug: boolean;
   currentInstruction: Instruction;
   memory : Array<addr>,
-  regbank : Array<number>
+  regbank : Array<number>,
+  isPaused: boolean;
 }
 
 export interface ICachedProgram {
