@@ -37,6 +37,7 @@ export default class TemplateProcessor implements IProcessor {
   public refname: string = "template";
   public halted = true;
 
+
   public frequency: number = 100; //frequency
   public memory: Array<addr> = new Array<addr>(); //memory
   public pc: number = 0; //program counter
@@ -53,7 +54,7 @@ export default class TemplateProcessor implements IProcessor {
   private debugBatch: Array<string> = []; // batch that stores the debug messages
   private screenWriteBatch: Array<{ address: number, value: number }> = []; // batch that stores the screen write messages
    // Add currentLine property
-   //public currentLine: number | undefined;
+   public currentLine: number | undefined;
 
    // Add isPaused property
    public _isPaused: boolean = false;

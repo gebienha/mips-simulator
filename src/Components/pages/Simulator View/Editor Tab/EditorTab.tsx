@@ -9,9 +9,9 @@ import {
   Stack,
   Tooltip,
   useToast,
-  Flex, 
+  Flex,
   Badge,
-  Grid
+  Grid,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import { BsTerminalFill, BsPauseFill } from "react-icons/bs";
@@ -32,6 +32,7 @@ import DebugTerminal from "./DebugTerminal";
 import LoadProgramModal from "./LoadProgramModal";
 import Screen, { ScreenRenderer } from "./Screen";
 import MemoryTerminal from "./MemoryTerminal";
+import BreakpointModal from "./BreakpointModal";
 
 export default function EditorView(props: {
   runBtn: Function;
@@ -65,6 +66,9 @@ export default function EditorView(props: {
 
   // Handles the visibility of the screen modal
   const [screenModalOpen, setScreenModalOpen] = useState<boolean>(false);
+
+  // Handles the visibility of the breakpoint modal
+  const [breakpointModalOpen, setBreakpointModalOpen] = useState<boolean>(false);
 
   // SharedData instance that holds the shared state of the application
   let share: SharedData = SharedData.instance;
@@ -159,12 +163,30 @@ export default function EditorView(props: {
   // Handle "Run" button click
   const handleRun = () => {
     const interval = setInterval(() => {
-      if (share.currentProcessor?.isPaused || share.currentProcessor?.halted) {
+      if (
+        share.currentProcessor?.isPaused ||
+        share.currentProcessor?.halted ||
+        (share.currentProcessor?.currentLine !== undefined &&
+          breakpoints.includes(share.currentProcessor.currentLine))
+      ) {
         clearInterval(interval);
       } else {
         props.callExecuteStep();
       }
     }, share.processorFrequency); // Adjust the delay as needed
+  };
+
+  // Add breakpoint functionality
+  const [breakpoints, setBreakpoints] = useState<number[]>([]);
+  //functions for breakpoints
+  const handleSetBreakpoint = (lineNumber: number | undefined) => {
+    if (lineNumber !== undefined && !breakpoints.includes(lineNumber)) {
+      setBreakpoints([...breakpoints, lineNumber]);
+    }
+  };
+
+  const handleRemoveBreakpoint = (lineNumber: number) => {
+    setBreakpoints(breakpoints.filter(b => b !== lineNumber));
   };
 
   function setScreenRendererCanva() {
@@ -531,6 +553,20 @@ export default function EditorView(props: {
               Download
             </IconButton>
           </Tooltip>
+          <Tooltip label="Set Breakpoint">
+            <IconButton
+              icon={<Icon as={RiSettings2Fill} style={{ transform: "scale(1.2)" }} />}
+              zIndex={10}
+              aria-label="Set Breakpoint"
+              backgroundColor={SharedData.theme.editorBackground}
+              color="white"
+              borderRadius={50}
+              size="sm"
+              onClick={() => setBreakpointModalOpen(true)}
+            >
+              Breakpoint
+            </IconButton>
+          </Tooltip>
         </Stack>
         {configModalOpen ? (
           <ConfigModal isOpen={configModalOpen} close={() => setConfigModalOpen(false)} />
@@ -538,6 +574,15 @@ export default function EditorView(props: {
           <></>
         )}
         <LoadProgramModal isOpen={loadProgramModalOpen} close={() => setLoadProgramModalOpen(false)} />
+        {breakpointModalOpen && (
+          <BreakpointModal
+            isOpen={breakpointModalOpen}
+            onClose={() => setBreakpointModalOpen(false)}
+            addBreakpoint={handleSetBreakpoint}
+            breakpoints={breakpoints}
+            removeBreakpoint={handleRemoveBreakpoint}
+          />
+        )}
       </Box>
       <AssemblyEditor
         onEditorChange={props.onEditorChange}
