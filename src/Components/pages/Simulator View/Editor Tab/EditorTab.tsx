@@ -9,7 +9,7 @@ import {
   Stack,
   Tooltip,
   useToast,
-  Flex, 
+  Flex,
   Badge,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
@@ -103,6 +103,8 @@ export default function EditorView(props: {
     V1: share.currentProcessor?.regbank[2],
   });
 
+  const [breakpoints, setBreakpoints] = useState<number[]>([]);
+
   useEffect(() => {
     // Listen for updates to the processor state
     const interval = setInterval(() => {
@@ -158,12 +160,20 @@ export default function EditorView(props: {
   // Handle "Run" button click
   const handleRun = () => {
     const interval = setInterval(() => {
-      if (share.currentProcessor?.isPaused || share.currentProcessor?.halted) {
+      if (share.currentProcessor?.isPaused || share.currentProcessor?.halted || (share.currentProcessor?.currentLine !== undefined && breakpoints.includes(share.currentProcessor.currentLine))) {
         clearInterval(interval);
       } else {
         props.callExecuteStep();
       }
     }, 1000); // Adjust the delay as needed
+  };
+
+  const handleSetBreakpoint = (lineNumber: number) => {
+    setBreakpoints([...breakpoints, lineNumber]);
+  };
+
+  const handleRemoveBreakpoint = (lineNumber: number) => {
+    setBreakpoints(breakpoints.filter(b => b !== lineNumber));
   };
 
   function setScreenRendererCanva() {
@@ -380,6 +390,20 @@ export default function EditorView(props: {
               zIndex={10}
             >
               Step
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Set Breakpoint">
+            <IconButton
+              icon={<Icon as={RiSettings2Fill} style={{ transform: "scale(1.2)" }} />}
+              zIndex={10}
+              aria-label="Set Breakpoint"
+              backgroundColor={SharedData.theme.editorBackground}
+              color="white"
+              borderRadius={50}
+              size="sm"
+              onClick={() => handleSetBreakpoint(share.currentProcessor?.currentLine)}
+            >
+              Breakpoint
             </IconButton>
           </Tooltip>
           <Tooltip label="Open terminal">

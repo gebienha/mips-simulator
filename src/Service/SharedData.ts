@@ -27,6 +27,7 @@ export interface IProcessor {
   memory : Array<addr>,
   regbank : Array<number>,
   isPaused: boolean;
+  currentLine: number;
 }
 
 export interface ICachedProgram {

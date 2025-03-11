@@ -2,7 +2,7 @@ import TemplateProcessor from "../TemplatePorcessor";
 import WorkerService from "../../Service/WorkerService";
 
 export default class SISMIPS extends TemplateProcessor {
-
+  
   public refname : string = "sis"
 
   public instructionSet: Array<string> = [

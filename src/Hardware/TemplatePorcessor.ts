@@ -50,7 +50,17 @@ export default class TemplateProcessor implements IProcessor {
   private stdoutBatch: Array<string> = []; // batch that stores the stdout messages
   private debugBatch: Array<string> = []; // batch that stores the debug messages
   private screenWriteBatch: Array<{ address: number, value: number }> = []; // batch that stores the screen write messages
+   // Add currentLine property
+   private _currentLine: number = 0;
 
+   get currentLine(): number {
+     return this._currentLine;
+   }
+ 
+   set currentLine(value: number) {
+     this._currentLine = value;
+   }
+   
    // Add isPaused property
    public _isPaused: boolean = false;
 
