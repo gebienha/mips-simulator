@@ -1,7 +1,8 @@
 import { warn } from "console";
 import Logger, { ErrorType } from "../Service/Logger";
 import SharedData, { Instruction, IProcessor } from "../Service/SharedData";
-import { WorkerUtils } from "../Service/WorkerUtils"; // Import WorkerUtils
+import WorkerService from "../Service/WorkerService";
+//import { WorkerService } from "../Service/WorkerService"; // Import WorkerUtils
 
 export const SCREEN_MEM_START = 2000;
 export const SCREEN_MEM_END = 12000;
@@ -52,7 +53,7 @@ export default class TemplateProcessor implements IProcessor {
   private debugBatch: Array<string> = []; // batch that stores the debug messages
   private screenWriteBatch: Array<{ address: number, value: number }> = []; // batch that stores the screen write messages
    // Add currentLine property
-   public currentLine: number | undefined;
+   //public currentLine: number | undefined;
 
    // Add isPaused property
    public _isPaused: boolean = false;
@@ -63,9 +64,9 @@ export default class TemplateProcessor implements IProcessor {
  
    set isPaused(value: boolean) {
      this._isPaused = value;
-     if(!value){
-      WorkerUtils.resumeExecution(); // Use WorkerUtils to avoid circular dependency
-     }
+    //  if(!value){
+    //   WorkerService.resumeExecution(); // Use WorkerUtils to avoid circular dependency
+    //  }
    }
 
   public instructionSet: Array<string> = [
