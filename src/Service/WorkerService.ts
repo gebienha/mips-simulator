@@ -129,7 +129,7 @@ export default class WorkerService {
       command: "run",
       instructions: instructions,
       processorref: processor.refname,
-      processorFrequency: frequency ?? 1000,
+      processorFrequency: frequency,
       useDebug: this.shared.debugInstructions,
       program: this.shared.program,
       startMem: this.shared.startMemory

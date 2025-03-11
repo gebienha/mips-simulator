@@ -11,6 +11,7 @@ import {
   useToast,
   Flex, 
   Badge,
+  Grid
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import { BsTerminalFill, BsPauseFill } from "react-icons/bs";
@@ -198,67 +199,11 @@ export default function EditorView(props: {
   return (
     <Stack direction={"column"} style={{ flex: 1, overflowY: "auto" }}>
       {screenModalOpen ? <Screen /> : <></>}
-      <Slide
-        direction="right"
-        in={consoleOpen}
-        style={{
-          zIndex: 10,
-          pointerEvents: "none",
-          position: "absolute",
-          top: 0, // Set the top to 0 to align it horizontally
-          right: 0, // Position it to the right of the editor
-          height: "100vh", // Ensure it spans the full height
-          width: "320px", // Adjust the width as needed for the terminal
-        }}
-      >
-        <Box
-          p="40px"
-          color="white"
-          mt="4"
-          bg="#20212b"
-          rounded="md"
-          shadow="md"
-          style={{
-            position: "relative",
-            left: "auto",
-            width: "320px",
-            height: "40vh",
-            overflowY: "auto",
-            pointerEvents: "auto",
-          }}
-        >
-          <Stack direction="row" spacing={4} zIndex={10} justify="flex-end">
-            <Button
-              style={{
-                position: "relative",
-                borderBottom: currentTerminal == 0 ? "solid" : "none",
-                backgroundColor: "none",
-                background: "none",
-                borderRadius: "0px",
-                top: -40,
-                right: 20,
-                zIndex: 10,
-              }}
-              onClick={() => setCurrentTerminal(0)}
-            >
-              Terminal
-            </Button>
-            <Button
-              style={{
-                position: "relative",
-                borderBottom: currentTerminal == 1 ? "solid" : "none",
-                backgroundColor: "none",
-                background: "none",
-                borderRadius: "0px",
-                top: -40,
-                right: 20,
-                zIndex: 10,
-              }}
-              onClick={() => setCurrentTerminal(1)}
-            >
-              Debug
-            </Button>
 
+<<<<<<< HEAD
+      <Box style={{ display: "flex", justifyContent: "flex-end", width: "800px" }}>
+        <Stack direction="row" align="centre" spacing={4} width="100%">
+=======
             <Button
               style={{
                 position: "relative",
@@ -310,8 +255,9 @@ export default function EditorView(props: {
           )}
         </Box>
       </Slide>
-      <Box style={{ display: "flex", justifyContent: "flex-end", width: "800px" }}>
-        <Stack direction="row" align="centre" spacing={4} width="100%">
+      <Box style={{ display: "flex", justifyContent: "space-between", width: "800px" }}>
+        {/* <Stack direction="row" align="centre" spacing={4} width="100%"> */}
+>>>>>>> 7728c5e85f4989d30c9e5697a019af943edc3ae0
           <Input
             placeholder="Recent"
             ref={txtProgramtitle}
@@ -323,6 +269,7 @@ export default function EditorView(props: {
             size="sm"
             width="200px"
           />
+          <Stack direction="row" align="centre" spacing={4} justifyContent="flex-end">
           <Tooltip label="Assemble">
             <IconButton
               icon={<BsFileEarmarkCode style={{ transform: "scale(1.4)" }} />}
@@ -537,6 +484,124 @@ export default function EditorView(props: {
         )}
         <LoadProgramModal isOpen={loadProgramModalOpen} close={() => setLoadProgramModalOpen(false)} />
       </Box>
+<<<<<<< HEAD
+      <Stack direction="row" spacing={4} justify="flex-end">
+        {/* Assembly Editor on the left side */}
+        <AssemblyEditor
+          onEditorChange={props.onEditorChange}
+          style={{
+            width: "800px",
+            height: "250px",
+            overflow: "auto",
+            flex: 1,  // Allow the editor to take up the remaining space
+          }}
+        />
+
+        {/* Terminal Box on the right side */}
+        <Box
+          p="40px"
+          color="white"
+          mt="4"
+          bg="#20212b"
+          rounded="md"
+          shadow="md"
+          style={{
+            position: "relative",
+            left: "auto",
+            width: "320px",  // Adjust width for the terminal
+            height: "40vh",
+            overflowY: "auto",
+            pointerEvents: "auto",
+            flexShrink: 0,  // Ensure terminal doesn't shrink
+          }}
+        >
+          {/* Terminal Buttons */}
+          <Stack direction="row" spacing={4} zIndex={10} justify="flex-start">
+            <Button
+              style={{
+                position: "relative",
+                borderBottom: currentTerminal == 0 ? "solid" : "none",
+                backgroundColor: "none",
+                background: "none",
+                borderRadius: "0px",
+                top: -40,
+                right: 20,
+                zIndex: 10,
+              }}
+              onClick={() => setCurrentTerminal(0)}
+            >
+              Terminal
+            </Button>
+            <Button
+              style={{
+                position: "relative",
+                borderBottom: currentTerminal == 1 ? "solid" : "none",
+                backgroundColor: "none",
+                background: "none",
+                borderRadius: "0px",
+                top: -40,
+                right: 20,
+                zIndex: 10,
+              }}
+              onClick={() => setCurrentTerminal(1)}
+            >
+              Debug
+            </Button>
+
+            <Button
+              style={{
+                position: "relative",
+                borderBottom: currentTerminal == 2 ? "solid" : "none",
+                backgroundColor: "none",
+                background: "none",
+                borderRadius: "0px",
+                top: -40,
+                right: 20,
+                zIndex: 10,
+              }}
+              onClick={() => setCurrentTerminal(2)}
+            >
+              Memory
+            </Button>
+          </Stack>
+
+          {/* Console Terminal */}
+          {currentTerminal == 0 ? (
+            <ConsoleTerminal
+              value={consoleTxt}
+              onClear={() => {
+                setConsoleTxt("");
+                Logger.instance.clearConsole();
+              }}
+            />
+          ) : (
+            <></>
+          )}
+
+          {/* Debug Terminal */}
+          {currentTerminal == 1 ? (
+            <DebugTerminal
+              value={debugTxt}
+              onClear={() => {
+                setDebugTxt("");
+                Logger.instance.clearDebug();
+              }}
+            />
+          ) : (
+            <></>
+          )}
+
+          {/* Memory Terminal */}
+          {currentTerminal == 2 ? (
+            <MemoryTerminal />
+          ) : (
+            <></>
+          )}
+        </Box>
+      </Stack>
+
+      <Flex direction="column" fontFamily="monospace" style={{ marginBottom: 10 }}>
+=======
       <AssemblyEditor
         onEditorChange={props.onEditorChange}
         style={{
@@ -545,132 +610,169 @@ export default function EditorView(props: {
           overflow: "auto",
         }}
       />
-      <Flex direction="column" fontFamily="monospace" style={{ marginBottom: 10 }}>
+      <Flex direction="column" fontFamily="Arial" style={{ marginBottom: 5, width: "800px" }}>
+>>>>>>> 7728c5e85f4989d30c9e5697a019af943edc3ae0
         {/* T Group */}
-        <Flex direction="row" wrap="wrap" justify="flex-start">
-          <Badge colorScheme="green">
-            T0 <br />
-            {share.currentProcessor?.regbank[5].toString(16)} <br />
-            ({share.currentProcessor?.regbank[5].toString(10)})
+        <Grid templateColumns="repeat(11, 1fr)" gap={0}>
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T0</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[5].toString(16)} <br />
+              ({share.currentProcessor?.regbank[5].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T1 <br />
-            {share.currentProcessor?.regbank[6].toString(16)} <br />
-            ({share.currentProcessor?.regbank[6].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T1</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[6].toString(16)} <br />
+              ({share.currentProcessor?.regbank[6].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T2 <br />
-            {share.currentProcessor?.regbank[7].toString(16)} <br />
-            ({share.currentProcessor?.regbank[7].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T2</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[7].toString(16)} <br />
+              ({share.currentProcessor?.regbank[7].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T3 <br />
-            {share.currentProcessor?.regbank[8].toString(16)} <br />
-            ({share.currentProcessor?.regbank[8].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T3</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[8].toString(16)} <br />
+              ({share.currentProcessor?.regbank[8].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T4 <br />
-            {share.currentProcessor?.regbank[13].toString(16)} <br />
-            ({share.currentProcessor?.regbank[13].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T4</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[13].toString(16)} <br />
+              ({share.currentProcessor?.regbank[13].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T5 <br />
-            {share.currentProcessor?.regbank[14].toString(16)} <br />
-            ({share.currentProcessor?.regbank[14].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T5</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[14].toString(16)} <br />
+              ({share.currentProcessor?.regbank[14].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T6 <br />
-            {share.currentProcessor?.regbank[15].toString(16)} <br />
-            ({share.currentProcessor?.regbank[15].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T6</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[15].toString(16)} <br />
+              ({share.currentProcessor?.regbank[15].toString(10)})
+            </span>
           </Badge>
-        </Flex>
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>A0</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[3].toString(16)} <br />
+              ({share.currentProcessor?.regbank[3].toString(10)})
+            </span>
+          </Badge>
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>A1</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[4].toString(16)} <br />
+              ({share.currentProcessor?.regbank[4].toString(10)})
+            </span>
+          </Badge>
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>A2</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[12].toString(16)} <br />
+              ({share.currentProcessor?.regbank[12].toString(10)})
+            </span>
+          </Badge>
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>A3</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[17].toString(16)} <br />
+              ({share.currentProcessor?.regbank[17].toString(10)})
+            </span>
+          </Badge>
+        </Grid>
 
         {/* S Group */}
-        <Flex direction="row" wrap="wrap" justify="flex-start">
-          <Badge colorScheme="cyan">
-            S0 <br />
-            {share.currentProcessor?.regbank[18].toString(16)} <br />
-            ({share.currentProcessor?.regbank[18].toString(10)})
+        <Grid templateColumns="repeat(11, 1fr)" gap={0} mt={1}>
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S0</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[18].toString(16)} <br />
+              ({share.currentProcessor?.regbank[18].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S1 <br />
-            {share.currentProcessor?.regbank[19].toString(16)} <br />
-            ({share.currentProcessor?.regbank[19].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S1</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[19].toString(16)} <br />
+              ({share.currentProcessor?.regbank[19].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S2 <br />
-            {share.currentProcessor?.regbank[20].toString(16)} <br />
-            ({share.currentProcessor?.regbank[20].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S2</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[20].toString(16)} <br />
+              ({share.currentProcessor?.regbank[20].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S3 <br />
-            {share.currentProcessor?.regbank[21].toString(16)} <br />
-            ({share.currentProcessor?.regbank[21].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S3</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[21].toString(16)} <br />
+              ({share.currentProcessor?.regbank[21].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S4 <br />
-            {share.currentProcessor?.regbank[22].toString(16)} <br />
-            ({share.currentProcessor?.regbank[22].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S4</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[22].toString(16)} <br />
+              ({share.currentProcessor?.regbank[22].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S5 <br />
-            {share.currentProcessor?.regbank[23].toString(16)} <br />
-            ({share.currentProcessor?.regbank[23].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S5</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[23].toString(16)} <br />
+              ({share.currentProcessor?.regbank[23].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S6 <br />
-            {share.currentProcessor?.regbank[24].toString(16)} <br />
-            ({share.currentProcessor?.regbank[24].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S6</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[24].toString(16)} <br />
+              ({share.currentProcessor?.regbank[24].toString(10)})
+            </span>
           </Badge>
-        </Flex>
-
-        {/* A Group */}
-        <Flex direction="row" wrap="wrap" justify="flex-start">
-          <Badge colorScheme="red">
-            A0 <br />
-            {share.currentProcessor?.regbank[3].toString(16)} <br />
-            ({share.currentProcessor?.regbank[3].toString(10)})
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>RA</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[9].toString(16)} <br />
+              ({share.currentProcessor?.regbank[9].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="red">
-            A1 <br />
-            {share.currentProcessor?.regbank[4].toString(16)} <br />
-            ({share.currentProcessor?.regbank[4].toString(10)})
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>SP</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[16].toString(16)} <br />
+              ({share.currentProcessor?.regbank[16].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="red">
-            A2 <br />
-            {share.currentProcessor?.regbank[12].toString(16)} <br />
-            ({share.currentProcessor?.regbank[12].toString(10)})
+          <Badge colorScheme="purple" width="72px">
+            <span style={{ fontWeight: "bold" }}>V0</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[1].toString(16)} <br />
+              ({share.currentProcessor?.regbank[1].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="red">
-            A3 <br />
-            {share.currentProcessor?.regbank[17].toString(16)} <br />
-            ({share.currentProcessor?.regbank[17].toString(10)})
+          <Badge colorScheme="purple" width="72px">
+            <span style={{ fontWeight: "bold" }}>V1</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[2].toString(16)} <br />
+              ({share.currentProcessor?.regbank[2].toString(10)})
+            </span>
           </Badge>
-        </Flex>
-
-        {/* RA, SP, V0, V1 */}
-        <Flex direction="row" wrap="wrap" justify="flex-start">
-          <Badge colorScheme="red">
-            RA <br />
-            {share.currentProcessor?.regbank[9].toString(16)} <br />
-            ({share.currentProcessor?.regbank[9].toString(10)})
-          </Badge>
-          <Badge colorScheme="red">
-            SP <br />
-            {share.currentProcessor?.regbank[16].toString(16)} <br />
-            ({share.currentProcessor?.regbank[16].toString(10)})
-          </Badge>
-          <Badge colorScheme="purple">
-            V0 <br />
-            {share.currentProcessor?.regbank[1].toString(16)} <br />
-            ({share.currentProcessor?.regbank[1].toString(10)})
-          </Badge>
-          <Badge colorScheme="purple">
-            V1 <br />
-            {share.currentProcessor?.regbank[2].toString(16)} <br />
-            ({share.currentProcessor?.regbank[2].toString(10)})
-          </Badge>
-        </Flex>
+        </Grid>
       </Flex>
 
     </Stack>

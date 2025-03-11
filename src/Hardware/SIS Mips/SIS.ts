@@ -2,7 +2,7 @@ import TemplateProcessor from "../TemplatePorcessor";
 import WorkerService from "../../Service/WorkerService";
 
 export default class SISMIPS extends TemplateProcessor {
-
+  
   public refname : string = "sis"
 
   public instructionSet: Array<string> = [
@@ -34,7 +34,7 @@ export default class SISMIPS extends TemplateProcessor {
     "01011", // $t3
     "11111" // $ra
   ]
-
+  //public currentLine: number | undefined;
   // Modify the execute method to check for pause state
   execute() {
     if (this._isPaused) {
