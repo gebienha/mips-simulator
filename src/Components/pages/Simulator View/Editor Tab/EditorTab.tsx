@@ -43,6 +43,8 @@ import WorkerService from "../../../../Service/WorkerService";
 import Screen, { ScreenRenderer } from "./Screen";
 import MemoryTerminal from "./MemoryTerminal";
 import { useState, useEffect } from "react";
+import { BsPauseFill } from "react-icons/bs";
+import IProcessor from "../../../../Service/SharedData";
 
 export default function EditorView(props: {
   runBtn: Function;
@@ -163,7 +165,25 @@ export default function EditorView(props: {
     }
   }
 
-  
+  // Add pause state
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Add pause icon component
+  const PauseIcon = () => (
+    <Icon as={BsPauseFill} style={{ transform: "scale(1.4)" }} />
+  );
+
+  // Add pause handler
+  const handlePause = () => {
+    setIsPaused(!isPaused);
+    if (share.currentProcessor) {
+      share.currentProcessor.isPaused = !isPaused;
+      if (!isPaused) {
+        // If we're pausing
+        WorkerService.instance.pauseExecution();
+      }
+    }
+  };
 
   // Updates the console and debug terminal when the log changes
   React.useEffect(() => {
@@ -343,6 +363,21 @@ export default function EditorView(props: {
                 zIndex={10}
               >
                 Run
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Pause">
+              <IconButton
+                icon={<PauseIcon />}
+                colorScheme="orange"
+                variant="solid"
+                onClick={handlePause}
+                aria-label="Pause program"
+                borderRadius={50}
+                size="sm"
+                zIndex={10}
+                isDisabled={!share.currentProcessor}
+              >
+                {isPaused ? 'Resume' : 'Pause'}
               </IconButton>
             </Tooltip>
             <Tooltip label="Run next instruction">

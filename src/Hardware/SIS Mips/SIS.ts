@@ -1,4 +1,5 @@
 import TemplateProcessor from "../TemplatePorcessor";
+import WorkerService from "../../Service/WorkerService";
 
 export default class SISMIPS extends TemplateProcessor {
 
@@ -34,4 +35,11 @@ export default class SISMIPS extends TemplateProcessor {
     "11111" // $ra
   ]
 
+  // Modify the execute method to check for pause state
+  execute() {
+    if (this._isPaused) {
+      return;
+    }
+    // ...existing execution code...
+  }
 }
