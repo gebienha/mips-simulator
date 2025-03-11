@@ -19,6 +19,7 @@ import {
   Tooltip,
   Select,
   useToast,
+  Grid
 } from "@chakra-ui/react";
 import React from "react";
 import { BsTerminalFill } from "react-icons/bs";
@@ -307,14 +308,15 @@ export default function EditorView(props: {
 
         </Box>
       </Slide>
-      <Box style={{ display: "flex", justifyContent: "flex-end", width: "800px" }}>
-        <Stack direction="row" align="centre" spacing={4} width="100%">
+      <Box style={{ display: "flex", justifyContent: "space-between", width: "800px" }}>
+        {/* <Stack direction="row" align="centre" spacing={4} width="100%" justifyContent="flex-end"> */}
         <Input placeholder="Recent" ref={txtProgramtitle} variant={"unstyled"} defaultValue={share.programTitle} onChange={(e) => {
               // setProgramTitle(e.target.value);
               share.programTitle = e.target.value;
             }}
             size="sm"
             width="200px" />
+          <Stack direction="row" align="center" spacing={4} justifyContent="flex-end">
           <Tooltip label="Assemble">
               <IconButton
                 icon={<BsFileEarmarkCode style={{ transform: "scale(1.4)" }} />}
@@ -545,132 +547,168 @@ export default function EditorView(props: {
           overflow: "auto"
         }} 
       />
-      <Flex direction="column" fontFamily="monospace" style={{ marginBottom: 10 }}>
+      <Flex direction="column" fontFamily="Arial" style={{ marginBottom: 5, width: "800px" }}>
         {/* T Group */}
-        <Flex direction="row" wrap="wrap" justify="flex-start">
-          <Badge colorScheme="green">
-            T0 <br />
-            {share.currentProcessor?.regbank[5].toString(16)} <br />
-            ({share.currentProcessor?.regbank[5].toString(10)})
+        <Grid templateColumns="repeat(11, 1fr)" gap={0}>
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T0</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[5].toString(16)} <br />
+              ({share.currentProcessor?.regbank[5].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T1 <br />
-            {share.currentProcessor?.regbank[6].toString(16)} <br />
-            ({share.currentProcessor?.regbank[6].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T1</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[6].toString(16)} <br />
+              ({share.currentProcessor?.regbank[6].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T2 <br />
-            {share.currentProcessor?.regbank[7].toString(16)} <br />
-            ({share.currentProcessor?.regbank[7].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T2</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[7].toString(16)} <br />
+              ({share.currentProcessor?.regbank[7].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T3 <br />
-            {share.currentProcessor?.regbank[8].toString(16)} <br />
-            ({share.currentProcessor?.regbank[8].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T3</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[8].toString(16)} <br />
+              ({share.currentProcessor?.regbank[8].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T4 <br />
-            {share.currentProcessor?.regbank[13].toString(16)} <br />
-            ({share.currentProcessor?.regbank[13].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T4</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[13].toString(16)} <br />
+              ({share.currentProcessor?.regbank[13].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T5 <br />
-            {share.currentProcessor?.regbank[14].toString(16)} <br />
-            ({share.currentProcessor?.regbank[14].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T5</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[14].toString(16)} <br />
+              ({share.currentProcessor?.regbank[14].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="green">
-            T6 <br />
-            {share.currentProcessor?.regbank[15].toString(16)} <br />
-            ({share.currentProcessor?.regbank[15].toString(10)})
+          <Badge colorScheme="green" width="72px">
+            <span style={{ fontWeight: "bold" }}>T6</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[15].toString(16)} <br />
+              ({share.currentProcessor?.regbank[15].toString(10)})
+            </span>
           </Badge>
-        </Flex>
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>A0</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[3].toString(16)} <br />
+              ({share.currentProcessor?.regbank[3].toString(10)})
+            </span>
+          </Badge>
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>A1</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[4].toString(16)} <br />
+              ({share.currentProcessor?.regbank[4].toString(10)})
+            </span>
+          </Badge>
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>A2</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[12].toString(16)} <br />
+              ({share.currentProcessor?.regbank[12].toString(10)})
+            </span>
+          </Badge>
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>A3</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[17].toString(16)} <br />
+              ({share.currentProcessor?.regbank[17].toString(10)})
+            </span>
+          </Badge>
+        </Grid>
 
         {/* S Group */}
-        <Flex direction="row" wrap="wrap" justify="flex-start">
-          <Badge colorScheme="cyan">
-            S0 <br />
-            {share.currentProcessor?.regbank[18].toString(16)} <br />
-            ({share.currentProcessor?.regbank[18].toString(10)})
+        <Grid templateColumns="repeat(11, 1fr)" gap={0} mt={1}>
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S0</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[18].toString(16)} <br />
+              ({share.currentProcessor?.regbank[18].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S1 <br />
-            {share.currentProcessor?.regbank[19].toString(16)} <br />
-            ({share.currentProcessor?.regbank[19].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S1</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[19].toString(16)} <br />
+              ({share.currentProcessor?.regbank[19].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S2 <br />
-            {share.currentProcessor?.regbank[20].toString(16)} <br />
-            ({share.currentProcessor?.regbank[20].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S2</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[20].toString(16)} <br />
+              ({share.currentProcessor?.regbank[20].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S3 <br />
-            {share.currentProcessor?.regbank[21].toString(16)} <br />
-            ({share.currentProcessor?.regbank[21].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S3</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[21].toString(16)} <br />
+              ({share.currentProcessor?.regbank[21].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S4 <br />
-            {share.currentProcessor?.regbank[22].toString(16)} <br />
-            ({share.currentProcessor?.regbank[22].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S4</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[22].toString(16)} <br />
+              ({share.currentProcessor?.regbank[22].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S5 <br />
-            {share.currentProcessor?.regbank[23].toString(16)} <br />
-            ({share.currentProcessor?.regbank[23].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S5</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[23].toString(16)} <br />
+              ({share.currentProcessor?.regbank[23].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="cyan">
-            S6 <br />
-            {share.currentProcessor?.regbank[24].toString(16)} <br />
-            ({share.currentProcessor?.regbank[24].toString(10)})
+          <Badge colorScheme="cyan" width="72px">
+            <span style={{ fontWeight: "bold" }}>S6</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[24].toString(16)} <br />
+              ({share.currentProcessor?.regbank[24].toString(10)})
+            </span>
           </Badge>
-        </Flex>
-
-        {/* A Group */}
-        <Flex direction="row" wrap="wrap" justify="flex-start">
-          <Badge colorScheme="red">
-            A0 <br />
-            {share.currentProcessor?.regbank[3].toString(16)} <br />
-            ({share.currentProcessor?.regbank[3].toString(10)})
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>RA</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[9].toString(16)} <br />
+              ({share.currentProcessor?.regbank[9].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="red">
-            A1 <br />
-            {share.currentProcessor?.regbank[4].toString(16)} <br />
-            ({share.currentProcessor?.regbank[4].toString(10)})
+          <Badge colorScheme="red" width="72px">
+            <span style={{ fontWeight: "bold" }}>SP</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[16].toString(16)} <br />
+              ({share.currentProcessor?.regbank[16].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="red">
-            A2 <br />
-            {share.currentProcessor?.regbank[12].toString(16)} <br />
-            ({share.currentProcessor?.regbank[12].toString(10)})
+          <Badge colorScheme="purple" width="72px">
+            <span style={{ fontWeight: "bold" }}>V0</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[1].toString(16)} <br />
+              ({share.currentProcessor?.regbank[1].toString(10)})
+            </span>
           </Badge>
-          <Badge colorScheme="red">
-            A3 <br />
-            {share.currentProcessor?.regbank[17].toString(16)} <br />
-            ({share.currentProcessor?.regbank[17].toString(10)})
+          <Badge colorScheme="purple" width="72px">
+            <span style={{ fontWeight: "bold" }}>V1</span> <br />
+            <span style={{ fontWeight: "normal" }}>
+              {share.currentProcessor?.regbank[2].toString(16)} <br />
+              ({share.currentProcessor?.regbank[2].toString(10)})
+            </span>
           </Badge>
-        </Flex>
-
-        {/* RA, SP, V0, V1 */}
-        <Flex direction="row" wrap="wrap" justify="flex-start">
-          <Badge colorScheme="red">
-            RA <br />
-            {share.currentProcessor?.regbank[9].toString(16)} <br />
-            ({share.currentProcessor?.regbank[9].toString(10)})
-          </Badge>
-          <Badge colorScheme="red">
-            SP <br />
-            {share.currentProcessor?.regbank[16].toString(16)} <br />
-            ({share.currentProcessor?.regbank[16].toString(10)})
-          </Badge>
-          <Badge colorScheme="purple">
-            V0 <br />
-            {share.currentProcessor?.regbank[1].toString(16)} <br />
-            ({share.currentProcessor?.regbank[1].toString(10)})
-          </Badge>
-          <Badge colorScheme="purple">
-            V1 <br />
-            {share.currentProcessor?.regbank[2].toString(16)} <br />
-            ({share.currentProcessor?.regbank[2].toString(10)})
-          </Badge>
-        </Flex>
+        </Grid>
       </Flex>
 
     </Stack>
