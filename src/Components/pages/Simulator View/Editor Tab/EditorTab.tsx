@@ -150,6 +150,7 @@ export default function EditorView(props: {
   
     // Handle "Run" button click
     const handleRun = () => {
+      WorkerService.instance.runCode(share.program, share.processorFrequency);
       props.runBtn(); // Assuming this triggers the program to run
     };
 

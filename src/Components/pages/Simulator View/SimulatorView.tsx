@@ -175,8 +175,6 @@ export default function SimulatorView() {
     WorkerService.instance.runCode(share.program, share.processorFrequency);
 
     console.log(`Running at frequency ${share.processorFrequency}`)
-
-    
   }
 
   function callExecuteStep()
