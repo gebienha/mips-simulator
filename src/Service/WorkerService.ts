@@ -189,4 +189,17 @@ export default class WorkerService {
     if (this.cpuWorker == null) return;
     this.cpuWorker.postMessage({ command: "reset" })
   }
+
+  resumeExecution() {
+    if (this.cpuWorker) {
+      this.cpuWorker.postMessage({ type: 'RESUME' });
+    }
+  }
+
+  // Add method to handle pause
+  pauseExecution() {
+    if (this.cpuWorker) {
+      this.cpuWorker.postMessage({ type: 'PAUSE' });
+    }
+  }
 }
